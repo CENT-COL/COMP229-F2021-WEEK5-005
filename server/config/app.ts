@@ -5,30 +5,31 @@ import cookieParser from "cookie-parser";
 import logger from 'morgan';
 import mongoose from 'mongoose';
 
-import indexRouter from './routes/index';
+import indexRouter from '../routes/index';
 
-// instantiate mongo
-mongoose.connect('mongodb://localhost:27017/shoes');
+//DB Configuration
+import * as DBConfig from './db';
+mongoose.connect(DBConfig.LocalURI);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
 db.once('open', function () {
-  console.log('connected to MongoDB at: mongodb://localhost:27017/shoes');
+  console.log('connected to MongoDB at:' + DBConfig.HostName);
 })
 
-// instantiate express ap
+// App Configuration
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'client')));
-app.use(express.static(path.join(__dirname, 'node_modules')));
+app.use(express.static(path.join(__dirname, '../../client')));
+app.use(express.static(path.join(__dirname, '../../node_modules')));
 
 //Router middleware
 app.use('/', indexRouter);
