@@ -6,6 +6,7 @@ import logger from 'morgan';
 import mongoose from 'mongoose';
 
 import indexRouter from '../routes/index';
+import contactRouter from '../routes/contact';
 
 //DB Configuration
 import * as DBConfig from './db';
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, '../../node_modules')));
 
 //Router middleware
 app.use('/', indexRouter);
+app.use('/contact', contactRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
