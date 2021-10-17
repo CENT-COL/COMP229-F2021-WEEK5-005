@@ -1,30 +1,25 @@
 import express from 'express';
-import { DisplayContactEditPage, DisplayContactListPage } from '../controllers/contact';
+import { DisplayListPage, DisplayAddPage, DisplayEditPage, ProcessAddPage, ProcessEditPage, ProcessDeletePage } from '../controllers/contact';
 
 const router = express.Router();
 
-// Mongo Database Name Contacts
-// Mongo Collection Name Contacts
-// Mongo Document Structure
+/* GET /contact-list page. */
+router.get('/list', DisplayListPage);
 
+/* GET - display /contact-list/add page. */
+router.get('/add', DisplayAddPage);
 
-/*
+/* GET - display /contact-list/edit/:id page. */
+router.get('/edit/:id', DisplayEditPage);
 
-http://server-url/contact/list
-http://server-url/contact/create
-http://server-url/contact/edit/:id
-http://server-url/contact/delete/:id
+/* POST - process /contact-list/add page */
+router.post('/add', ProcessAddPage);
 
-*/
+/* POST - process /contact-list/edit/:id page */
+router.post('/edit/:id', ProcessEditPage);
 
-
-// GET display contact list view
-
-router.get('/list', DisplayContactListPage);
-
-// GET display contact item edit
-
-router.get('/edit/:id', DisplayContactEditPage);
+/* GET - process /contact-list/delete/:id */
+router.get('/delete/:id', ProcessDeletePage);
 
 export default router;
 

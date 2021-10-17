@@ -2,10 +2,10 @@ import express from 'express';
 
 import ContactModel from '../models/contact';
 
-export function DisplayContactListPage(req: express.Request, res: express.Response, next: express.NextFunction) {
+//(R)ead in CRUD
+export function DisplayListPage(req: express.Request, res: express.Response, next: express.NextFunction) {
     ContactModel.find(function (err, contactCollection) {
 
-        console.log(contactCollection);
         if (err) {
             console.error(err);
             res.end(err);
@@ -17,10 +17,9 @@ export function DisplayContactListPage(req: express.Request, res: express.Respon
     })
 }
 
-export function DisplayContactEditPage(req: express.Request, res: express.Response, next: express.NextFunction) {
+// Display (E)dit page
+export function DisplayEditPage(req: express.Request, res: express.Response, next: express.NextFunction) {
     let id = req.params.id;
-
-    console.log(id);
 
     ContactModel.findById(id, {}, {}, (err, contactItemToEdit) => {
         if (err) {
@@ -30,5 +29,65 @@ export function DisplayContactEditPage(req: express.Request, res: express.Respon
 
         console.log(contactItemToEdit);
         res.render('index', { title: "Contact Edit", page: "contact/contact-edit", item: contactItemToEdit })
+    })
+}
+
+// Display (C)reate page
+export function DisplayAddPage(req: express.Request, res: express.Response, next: express.NextFunction) {
+    // show the edit view
+    res.render('index', { title: 'Add Contact', page: 'contact/contact-edit', item: '' });
+}
+
+// Process (E)dit page
+export function ProcessEditPage(req: express.Request, res: express.Response, next: express.NextFunction) {
+    let id = req.params.id;
+
+    let updatedItem = new ContactModel({
+        "_id": id,
+        "contactName": req.body.contactName,
+        "contactNumber": req.body.contactNumber,
+        "emailAddress": req.body.emailAddress
+    });
+
+    ContactModel.updateOne({ _id: id }, updatedItem, {}, (err) => {
+        if (err) {
+            console.error(err);
+            res.end(err);
+        }
+
+        res.redirect('/contact/list');
+    })
+}
+
+// Process (C)reate page
+export function ProcessAddPage(req: express.Request, res: express.Response, next: express.NextFunction): void {
+
+    let newItem = new ContactModel({
+        "contactName": req.body.contactName,
+        "contactNumber": req.body.contactNumber,
+        "emailAddress": req.body.emailAddress
+    });
+
+    ContactModel.create(newItem, (err) => {
+        if (err) {
+            console.error(err);
+            res.end(err);
+        };
+
+        res.redirect('/contact/list');
+    })
+}
+
+// Process (D)elete page
+export function ProcessDeletePage(req: express.Request, res: express.Response, next: express.NextFunction) {
+    let id = req.params.id;
+
+    ContactModel.remove({ _id: id }, (err) => {
+        if (err) {
+            console.error(err);
+            res.end(err);
+        }
+
+        res.redirect('/contact/list');
     })
 }
